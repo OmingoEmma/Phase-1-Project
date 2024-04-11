@@ -7,6 +7,17 @@ const standardTheme = document.querySelector('.standard-theme');
 const lightTheme = document.querySelector('.light-theme');
 const darkerTheme = document.querySelector('.darker-theme');
 
+// Add CSS rules for text alignment
+const style = document.createElement('style');
+style.innerHTML = `
+  .quote-display {
+    text-align: right;
+  }
+  .todo-list {
+    text-align: left;
+  }
+`;
+document.head.appendChild(style);
 
 // Event Listeners
 
@@ -201,3 +212,39 @@ function changeTheme(color) {
         });
     });
 }
+
+//Quote generator Fetch() function
+// Selectors
+const quoteDisplay = document.querySelector('.quote-display');
+const authorDisplay = document.querySelector('.author-display');
+const getQuoteBtn = document.querySelector('.get-quote-btn');
+
+// Event Listeners
+getQuoteBtn.addEventListener('click', getQuote);
+
+// Functions
+function getQuote() {
+  fetch('db.json')
+    .then(response => response.json())
+    .then(data => {
+      const quotes = data.quotes;
+      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteDisplay.textContent = randomQuote.quote;
+      authorDisplay.textContent = `- ${randomQuote.author}`;
+    })
+    .catch(error => console.error(error));
+}
+
+// Initialize with a random quote
+getQuote();
+
+//Quotes JS
+const button = document.getElementById("get-quote");
+button.addEventListener("click", () => {
+  fetch("/api/quotes/random")
+    .then((response) => response.json())
+    .then((quote) => {
+      const quoteDisplay = document.getElementById("quote-display");
+      quoteDisplay.innerHTML = `<p>"${quote.text}"</p><p>- ${quote.author}</p>`;
+    });
+});
